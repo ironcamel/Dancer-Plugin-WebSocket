@@ -2,6 +2,8 @@ package Dancer::Plugin::WebSocket;
 use Carp;
 use Dancer ':syntax';
 
+# VERSION
+
 BEGIN {
     foreach my $req (qw(AnyMQ Plack Web::Hippie)) {
         croak "$req is required for WebSocket support"
@@ -47,13 +49,7 @@ register websocket_send => sub {
 
 register_plugin;
 
-1;
-
-__END__
-
-=head1 NAME
-
-Dancer::Plugin::WebSocket - a plugin for easily creating WebSocket apps
+# ABSTRACT: A Dancer plugin for easily creating WebSocket apps
 
 =head1 SYNOPSIS
 
