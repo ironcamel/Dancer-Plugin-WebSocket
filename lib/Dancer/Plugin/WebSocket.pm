@@ -120,3 +120,5 @@ For example:
     plackup -s Twiggy bin/app.pl
 
 =cut
+
+1;
