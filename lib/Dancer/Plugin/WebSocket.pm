@@ -4,15 +4,10 @@ use Dancer ':syntax';
 
 # VERSION
 
-BEGIN {
-    foreach my $req (qw(AnyMQ Plack Web::Hippie)) {
-        croak "$req is required for WebSocket support"
-            unless Dancer::ModuleLoader->load($req);
-    }
-}
-
-use Dancer::Plugin;
 use AnyMQ;
+use Dancer::Plugin;
+use Plack;
+use Web::Hippie;
 
 my $bus;
 sub _bus {
