@@ -1,13 +1,12 @@
-use Test::More import => ['!pass'];
-use Dancer ':syntax';
+use Test::More import => ['!pass'], tests => 6;
 
-foreach my $req (qw(AnyMQ Plack Web::Hippie)) {
-    plan skip_all =>  "$req is required to run websocket tests"
-        unless Dancer::ModuleLoader->load($req);
+BEGIN {
+    use_ok 'Dancer::Plugin::WebSocket';
+    use_ok 'AnyMQ';
+    use_ok 'Plack';
+    use_ok 'Web::Hippie';
 }
-plan tests => 2;
 
-use Dancer::Plugin::WebSocket;
 my $topic = Dancer::Plugin::WebSocket::_topic();
 my $listener = AnyMQ->new_listener($topic);
 
@@ -18,3 +17,5 @@ $listener->poll_once(sub {
     is @msgs => 1, "got one websocket message";
     is_deeply $msgs[0] => { msg => 'allo' }, "got the right websocket message";
 });
+
+done_testing;
