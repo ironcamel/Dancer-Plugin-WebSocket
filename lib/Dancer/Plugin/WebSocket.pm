@@ -21,6 +21,8 @@ sub _topic {
     return $topic = _bus->topic('dancer-plugin-websocket');
 }
 
+my $triggers = {};
+
 set plack_middlewares_map => {
     '/_hippie' => [
         [ '+Web::Hippie' ],
@@ -30,11 +32,29 @@ set plack_middlewares_map => {
 
 # Web::Hippie routes
 get '/new_listener' => sub {
+
+    if (defined $triggers->{on_new_listener}) {
+        $triggers->{on_new_listener}->();
+    }
+
     request->env->{'hippie.listener'}->subscribe(_topic);
 };
+
 get '/message' => sub {
     my $msg = request->env->{'hippie.message'};
+
+    if ( defined $triggers->{on_message} ) {
+        $msg = $triggers->{on_message}->($msg);
+    }
     _topic->publish($msg);
+};
+
+register ws_on_message => sub {
+    $triggers->{on_message} = shift;
+};
+
+register ws_on_new_listener => sub {
+    $triggers->{on_new_listener} = shift;
 };
 
 register websocket_send => sub {
